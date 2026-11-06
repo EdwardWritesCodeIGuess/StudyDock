@@ -13,6 +13,7 @@ cp "$BIN_PATH/StudyDock" "$APP/Contents/MacOS/StudyDock"
 cp Configuration/Info.plist "$APP/Contents/Info.plist"
 /usr/libexec/PlistBuddy -c 'Set :CFBundleIdentifier com.edwardlink.StudyDock' "$APP/Contents/Info.plist"
 /usr/libexec/PlistBuddy -c 'Set :CFBundleExecutable StudyDock' "$APP/Contents/Info.plist"
+/usr/libexec/PlistBuddy -c 'Add :NSPrincipalClass string NSApplication' "$APP/Contents/Info.plist"
 if [[ -f Resources/StudyDock.icns ]]; then
   cp Resources/StudyDock.icns "$APP/Contents/Resources/StudyDock.icns"
   /usr/libexec/PlistBuddy -c 'Add :CFBundleIconFile string StudyDock' "$APP/Contents/Info.plist"

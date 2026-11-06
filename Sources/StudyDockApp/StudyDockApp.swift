@@ -3,6 +3,16 @@ import SwiftUI
 @main
 struct StudyDockApp: App {
     @StateObject private var store = StudyStore(demo: ProcessInfo.processInfo.arguments.contains("--demo"))
+    init() {
+        #if os(macOS) && SWIFT_PACKAGE
+        // SwiftPM executables need explicit activation when packaged outside Xcode.
+        DispatchQueue.main.async {
+            NSApp.setActivationPolicy(.regular)
+            NSApp.activate(ignoringOtherApps: true)
+            NSApp.windows.first?.makeKeyAndOrderFront(nil)
+        }
+        #endif
+    }
     var body: some Scene {
         WindowGroup {
             Dashboard().environmentObject(store)
