@@ -24,7 +24,7 @@ targets:
   StudyDock:
     type: application
     supportedDestinations: [iOS, macOS]
-    sources: [Sources/StudyDockApp]
+    sources: [Sources/StudyDockApp, Resources]
     dependencies:
       - target: StudyDockCore
     settings:
@@ -36,6 +36,7 @@ targets:
         TARGETED_DEVICE_FAMILY: "1,2"
         ENABLE_HARDENED_RUNTIME: YES
         GENERATE_INFOPLIST_FILE: NO
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
   StudyDockTests:
     type: bundle.unit-test
     supportedDestinations: [iOS, macOS]

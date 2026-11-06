@@ -18,6 +18,8 @@
 		47FFBD552214F9625CEFDAB4 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016A50A797FFF9C38409AB01 /* Models.swift */; };
 		6C25AE527E680BDD9C5480B1 /* FocusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0067B099D5148BDBB89D7AB /* FocusView.swift */; };
 		6E205D603B87EAF51836B5E5 /* StudyDockCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0E1741AB2767A66A86FCD937 /* StudyDockCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		7AA2DF6B53A4E0CE69C4ED45 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4ACB623B4BBBF80572E2CC28 /* Assets.xcassets */; };
+		A6F43BE922F32AE24DFCB20C /* StudyDock.icns in Resources */ = {isa = PBXBuildFile; fileRef = F40CB6142E1C6DDAC7B05638 /* StudyDock.icns */; };
 		BF1B7E6E596AA46CC435B741 /* AppleIntegration.swift in Sources */ = {isa = PBXBuildFile; fileRef = A59F069E5030E09D69589463 /* AppleIntegration.swift */; };
 		C802C02D8437EA0305A6C8DC /* StudyDockApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D516F1AF2AD356E952542649 /* StudyDockApp.swift */; };
 		CB5FC55C2672834F6EECA8F2 /* StudyDockTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87B15AC50FBDCF2E9E89C529 /* StudyDockTests.swift */; };
@@ -73,6 +75,7 @@
 		0B138E57CC301EDD56FA8312 /* StudyDockTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = StudyDockTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0C86A4E48CCC9B368EFF1FC6 /* AttachmentImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentImporter.swift; sourceTree = "<group>"; };
 		0E1741AB2767A66A86FCD937 /* StudyDockCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = StudyDockCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4ACB623B4BBBF80572E2CC28 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6145F1ED1D30EBF37AB4B0B4 /* CaptureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureView.swift; sourceTree = "<group>"; };
 		87B15AC50FBDCF2E9E89C529 /* StudyDockTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudyDockTests.swift; sourceTree = "<group>"; };
 		87F14D9D9B908AC9EAD86C4A /* StudyStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudyStore.swift; sourceTree = "<group>"; };
@@ -83,6 +86,7 @@
 		A59F069E5030E09D69589463 /* AppleIntegration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleIntegration.swift; sourceTree = "<group>"; };
 		D516F1AF2AD356E952542649 /* StudyDockApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudyDockApp.swift; sourceTree = "<group>"; };
 		F0067B099D5148BDBB89D7AB /* FocusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusView.swift; sourceTree = "<group>"; };
+		F40CB6142E1C6DDAC7B05638 /* StudyDock.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = StudyDock.icns; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +109,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0AD2135670A2B83F57AE33CB /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				4ACB623B4BBBF80572E2CC28 /* Assets.xcassets */,
+				F40CB6142E1C6DDAC7B05638 /* StudyDock.icns */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		4A683ACF511A13F4C93A4FA7 /* StudyDockCore */ = {
 			isa = PBXGroup;
 			children = (
@@ -145,6 +158,7 @@
 		B5E8D1B436F647A81F659501 = {
 			isa = PBXGroup;
 			children = (
+				0AD2135670A2B83F57AE33CB /* Resources */,
 				A48471FD9CDE9D87E445528C /* StudyDockApp */,
 				4A683ACF511A13F4C93A4FA7 /* StudyDockCore */,
 				C5D74FC119BA0383BCAB127A /* StudyDockCoreTests */,
@@ -206,6 +220,7 @@
 			buildConfigurationList = E33914F2C150E17A87E814FC /* Build configuration list for PBXNativeTarget "StudyDock" */;
 			buildPhases = (
 				2FAF92015B2F89A3DEA18B2E /* Sources */,
+				27986C9F36669E23D35FE63F /* Resources */,
 				E2CF49F7ED4A462457BB529B /* Frameworks */,
 				8B890488BB09C83B4B26A93C /* Embed Frameworks */,
 			);
@@ -261,6 +276,18 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		27986C9F36669E23D35FE63F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7AA2DF6B53A4E0CE69C4ED45 /* Assets.xcassets in Resources */,
+				A6F43BE922F32AE24DFCB20C /* StudyDock.icns in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		2FAF92015B2F89A3DEA18B2E /* Sources */ = {
