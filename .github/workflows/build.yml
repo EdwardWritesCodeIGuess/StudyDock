@@ -1,0 +1,19 @@
+name: Build and test
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  apple:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test planning, persistence, and timer logic
+        run: swift test
+      - name: Build macOS app
+        run: xcodebuild -project StudyDock.xcodeproj -scheme StudyDock -destination 'generic/platform=macOS' -derivedDataPath build/mac CODE_SIGNING_ALLOWED=NO build
+      - name: Build iPhone and iPad app
+        run: xcodebuild -project StudyDock.xcodeproj -scheme StudyDock -destination 'generic/platform=iOS Simulator' -derivedDataPath build/ios CODE_SIGNING_ALLOWED=NO build
