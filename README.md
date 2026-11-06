@@ -4,11 +4,11 @@ A calmer place for schoolwork. Native SwiftUI app for **iPhone, iPad, and Mac**.
 
 ## Download
 
-Open [the latest release](https://github.com/EdwardWritesCodeIGuess/StudyDock/releases/latest), expand **Assets**, and download **StudyDock-macOS-AppleSilicon.zip**. Unzip it, then drag **StudyDock.app** into **Applications**. This build is for Apple silicon Macs (M1 or newer), macOS 14+.
+Open [the latest release](https://github.com/EdwardWritesCodeIGuess/StudyDock/releases/latest), expand **Assets**, and download **StudyDock-macOS-AppleSilicon.dmg**. Open the DMG, then drag **StudyDock.app** onto the **Applications** shortcut. Eject the StudyDock disk and open the app from Applications. A ZIP is also available. This build is for Apple silicon Macs (M1 or newer), macOS 14+.
 
 This personal development build is ad hoc signed, not notarized by Apple. If macOS blocks opening the download, try opening it once, then go to **System Settings → Privacy & Security → Open Anyway** and confirm. Only do this for the release from this repository. No terminal command or disabling Gatekeeper is needed.
 
-For your iPhone, use the Xcode steps below. The Mac ZIP cannot install on an iPhone; there is no TestFlight or App Store release yet.
+For your iPhone, use the Xcode steps below. The Mac download cannot install on an iPhone; there is no TestFlight or App Store release yet.
 
 - **Homework → Apple Reminders.** Due dates and completion status stay up to date when edited in StudyDock.
 - **Tests, quizzes, and projects → Apple Calendar.** Events include the assignment instructions and alerts one day and one hour beforehand.
