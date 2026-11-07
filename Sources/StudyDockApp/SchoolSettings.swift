@@ -80,6 +80,7 @@ struct SchoolSettings: View {
             if let error { Text(error).foregroundStyle(.red).font(.caption) }
             Text("New events use this calendar. Existing events keep their current calendar.").font(.caption)
         }.onAppear {
+            if UserDefaults.standard.object(forKey: "aDayAnchor") == nil { UserDefaults.standard.set(anchor, forKey: "aDayAnchor") }
             if EKEventStore.authorizationStatus(for: .event) == .fullAccess { calendars = events.calendars(for: .event).filter(\.allowsContentModifications) }
         }.onChange(of: slots.map { "\($0.id)\($0.subject)\($0.day)\($0.hour)\($0.minute)" }) { _, _ in SchoolSchedule.slots = slots }
     }

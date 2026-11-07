@@ -65,8 +65,12 @@ final class DictationRecorder: ObservableObject {
     private var request: SFSpeechAudioBufferRecognitionRequest?
     private var task: SFSpeechRecognitionTask?
     private var tapped = false
+    private var requesting = false
+    private var sessionID = UUID()
     func start() async {
-        guard !recording else { return }
+        guard !recording && !requesting else { return }
+        requesting = true
+        defer { requesting = false }
         let permission = await withCheckedContinuation { continuation in SFSpeechRecognizer.requestAuthorization { continuation.resume(returning: $0) } }
         guard permission == .authorized else { error = "Allow speech recognition in Settings to dictate."; return }
         let microphone = await AVCaptureDevice.requestAccess(for: .audio)
@@ -84,8 +88,10 @@ final class DictationRecorder: ObservableObject {
             let input = engine.inputNode, format = engine.inputNode.outputFormat(forBus: 0)
             guard format.sampleRate > 0, format.channelCount > 0 else { throw StudyError.message("No microphone input is available.") }
             input.installTap(onBus: 0, bufferSize: 1024, format: format) { buffer, _ in request.append(buffer) }; tapped = true
+            let sessionID = UUID(); self.sessionID = sessionID
             task = recognizer.recognitionTask(with: request) { [weak self] result, failure in
                 Task { @MainActor in
+                    guard self?.sessionID == sessionID else { return }
                     if let result { self?.text = result.bestTranscription.formattedString }
                     if let failure { self?.error = failure.localizedDescription; self?.stop() }
                     else if result?.isFinal == true { self?.stop() }
@@ -95,6 +101,7 @@ final class DictationRecorder: ObservableObject {
         } catch { self.error = error.localizedDescription; stop() }
     }
     func stop() {
+        sessionID = UUID()
         engine.stop()
         if tapped { engine.inputNode.removeTap(onBus: 0); tapped = false }
         request?.endAudio(); task?.cancel(); task = nil; request = nil; recording = false
