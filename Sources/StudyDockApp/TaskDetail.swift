@@ -77,6 +77,8 @@ struct SettingsView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
+                DockCard { SchoolSettings() }
+                DockCard { AISettingsView() }
                 Text("Make yourself at home.").font(.system(size: 30, weight: .medium, design: .serif))
                 DockCard {
                     VStack(alignment: .leading, spacing: 16) {

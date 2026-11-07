@@ -15,6 +15,10 @@
   <key>NSRemindersUsageDescription</key><string>StudyDock adds and updates your homework reminders.</string>
   <key>NSCalendarsUsageDescription</key><string>StudyDock adds and updates schoolwork events.</string>
   <key>NSUserNotificationUsageDescription</key><string>StudyDock lets you know when a focus session finishes.</string>
+  <key>NSMicrophoneUsageDescription</key><string>Dictate schoolwork so StudyDock can turn it into tasks.</string>
+  <key>NSSpeechRecognitionUsageDescription</key><string>Transcribe your schoolwork using on-device speech recognition.</string>
+  <key>NSLocalNetworkUsageDescription</key><string>Connect to your optional local AI model server.</string>
+  <key>NSAppTransportSecurity</key><dict><key>NSAllowsLocalNetworking</key><true/></dict>
   <key>UILaunchScreen</key><dict/>
   <key>UIApplicationSceneManifest</key><dict><key>UIApplicationSupportsMultipleScenes</key><false/></dict>
   <key>UISupportedInterfaceOrientations</key><array><string>UIInterfaceOrientationPortrait</string><string>UIInterfaceOrientationLandscapeLeft</string><string>UIInterfaceOrientationLandscapeRight</string></array>

@@ -30,7 +30,13 @@ final class AppleIntegration {
             let predicate = events.predicateForEvents(withStart: task.due.addingTimeInterval(-366 * 86400), end: task.due.addingTimeInterval(366 * 86400), calendars: nil)
             let recovered = existing == nil ? events.events(matching: predicate).first { $0.url == task.deepLink } : nil
             let event = existing ?? recovered ?? EKEvent(eventStore: events)
-            if event.calendar == nil { event.calendar = events.defaultCalendarForNewEvents }
+            if event.calendar == nil {
+                let selected = UserDefaults.standard.string(forKey: "preferredCalendar") ?? ""
+                if !selected.isEmpty {
+                    guard let calendar = events.calendar(withIdentifier: selected), calendar.allowsContentModifications else { throw StudyError.message("Your chosen calendar is unavailable. Choose another in StudyDock Settings.") }
+                    event.calendar = calendar
+                } else { event.calendar = events.defaultCalendarForNewEvents }
+            }
             guard event.calendar != nil, event.calendar.allowsContentModifications else {
                 throw StudyError.message("Choose a writable default calendar in Apple Calendar, then retry.")
             }

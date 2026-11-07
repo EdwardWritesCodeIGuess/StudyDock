@@ -6,6 +6,8 @@ struct CaptureView: View {
     @EnvironmentObject private var store: StudyStore
     @Environment(\.dismiss) private var dismiss
     @State private var draft: Schoolwork
+    @StateObject private var recorder = DictationRecorder()
+    @State private var understanding = false
     @State private var mode = 0
     @State private var dump = ""
     @State private var candidates: [CaptureCandidate] = []
@@ -48,7 +50,7 @@ struct CaptureView: View {
             case .failure(let error): localError = error.localizedDescription
             }
         }
-        .onDisappear { store.cleanUp(imported) }
+        .onDisappear { recorder.stop(); store.cleanUp(imported) }
     }
     private var canSave: Bool {
         if mode == 0 { return !draft.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && !store.busy.contains(draft.id) }
@@ -103,12 +105,23 @@ struct CaptureView: View {
     }
     private var bulkItems: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("One task per line. Add [Subject] at the start if you like.").font(.subheadline)
+            Text("Talk it through, paste a list, or type naturally. Review the suggested tasks before adding.").font(.subheadline)
+            Button(recorder.recording ? "Stop dictation" : "Dictate schoolwork", systemImage: recorder.recording ? "stop.circle" : "mic") {
+                if recorder.recording { recorder.stop() } else { Task { await recorder.start() } }
+            }
+            .onChange(of: recorder.text) { _, value in dump = value }
+            if let error = recorder.error { Text(error).font(.caption).foregroundStyle(.orange) }
             Text("[Math] Practice set due tomorrow at 5pm\n[Biology] Quiz on November 12 at 9am\n[History] Project due November 20 at 3pm")
                 .font(.caption).foregroundStyle(DockStyle.muted).textSelection(.enabled)
             TextEditor(text: $dump).frame(minHeight: 160).padding(8).scrollContentBackground(.hidden).background(.white, in: RoundedRectangle(cornerRadius: 12))
                 .onChange(of: dump) { _, _ in candidates = [] }
-            Button("Review these items", systemImage: "text.badge.checkmark") { candidates = CaptureParser.parse(dump) }.buttonStyle(PrimaryButtonStyle()).disabled(dump.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+            Button(understanding ? "Understanding…" : "Review these items", systemImage: "text.badge.checkmark") {
+                recorder.stop(); understanding = true
+                Task {
+                    defer { understanding = false }
+                    do { candidates = try await VoiceTaskAI.extract(dump) } catch { localError = error.localizedDescription }
+                }
+            }.buttonStyle(PrimaryButtonStyle()).disabled(understanding || recorder.recording || dump.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             if !candidates.isEmpty {
                 Text("Check every date and type before adding. You can attach files to each item afterward.").font(.caption).foregroundStyle(DockStyle.muted)
             }

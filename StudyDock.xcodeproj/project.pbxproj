@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		00E4DE80A60EE7D90014DBDB /* StudyDockCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E1741AB2767A66A86FCD937 /* StudyDockCore.framework */; };
 		115CBC904FCFE42444AC8580 /* Dashboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89416FE0F08CD0633F60A01D /* Dashboard.swift */; };
+		21B8284C4DD50BC83B2127B0 /* SchoolSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3091E5B7FDD353C14F1EBD8A /* SchoolSettings.swift */; };
 		256B3248FA0EEF0DBF89A619 /* TaskDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B53500418FD084D269BDA29 /* TaskDetail.swift */; };
 		26D2C8F61C2A4235A7070DEA /* CaptureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6145F1ED1D30EBF37AB4B0B4 /* CaptureView.swift */; };
 		31C51F5C41C2E1B3E1AC1B41 /* Planning.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E99B7E99E8778181523C889 /* Planning.swift */; };
@@ -21,6 +22,7 @@
 		7AA2DF6B53A4E0CE69C4ED45 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4ACB623B4BBBF80572E2CC28 /* Assets.xcassets */; };
 		A6F43BE922F32AE24DFCB20C /* StudyDock.icns in Resources */ = {isa = PBXBuildFile; fileRef = F40CB6142E1C6DDAC7B05638 /* StudyDock.icns */; };
 		BF1B7E6E596AA46CC435B741 /* AppleIntegration.swift in Sources */ = {isa = PBXBuildFile; fileRef = A59F069E5030E09D69589463 /* AppleIntegration.swift */; };
+		C6A738708C338C47BF98DC91 /* VoiceAI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64723279E4583A9530184B75 /* VoiceAI.swift */; };
 		C802C02D8437EA0305A6C8DC /* StudyDockApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D516F1AF2AD356E952542649 /* StudyDockApp.swift */; };
 		CB5FC55C2672834F6EECA8F2 /* StudyDockTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87B15AC50FBDCF2E9E89C529 /* StudyDockTests.swift */; };
 		EB8D3E99EFAEA42698250060 /* StudyDockCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0E1741AB2767A66A86FCD937 /* StudyDockCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -75,8 +77,10 @@
 		0B138E57CC301EDD56FA8312 /* StudyDockTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = StudyDockTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0C86A4E48CCC9B368EFF1FC6 /* AttachmentImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentImporter.swift; sourceTree = "<group>"; };
 		0E1741AB2767A66A86FCD937 /* StudyDockCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = StudyDockCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		3091E5B7FDD353C14F1EBD8A /* SchoolSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchoolSettings.swift; sourceTree = "<group>"; };
 		4ACB623B4BBBF80572E2CC28 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6145F1ED1D30EBF37AB4B0B4 /* CaptureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureView.swift; sourceTree = "<group>"; };
+		64723279E4583A9530184B75 /* VoiceAI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceAI.swift; sourceTree = "<group>"; };
 		87B15AC50FBDCF2E9E89C529 /* StudyDockTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudyDockTests.swift; sourceTree = "<group>"; };
 		87F14D9D9B908AC9EAD86C4A /* StudyStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudyStore.swift; sourceTree = "<group>"; };
 		89416FE0F08CD0633F60A01D /* Dashboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dashboard.swift; sourceTree = "<group>"; };
@@ -146,10 +150,12 @@
 				6145F1ED1D30EBF37AB4B0B4 /* CaptureView.swift */,
 				89416FE0F08CD0633F60A01D /* Dashboard.swift */,
 				F0067B099D5148BDBB89D7AB /* FocusView.swift */,
+				3091E5B7FDD353C14F1EBD8A /* SchoolSettings.swift */,
 				D516F1AF2AD356E952542649 /* StudyDockApp.swift */,
 				87F14D9D9B908AC9EAD86C4A /* StudyStore.swift */,
 				9B53500418FD084D269BDA29 /* TaskDetail.swift */,
 				94E429FB89CB8F9614215578 /* Theme.swift */,
+				64723279E4583A9530184B75 /* VoiceAI.swift */,
 			);
 			name = StudyDockApp;
 			path = Sources/StudyDockApp;
@@ -299,10 +305,12 @@
 				26D2C8F61C2A4235A7070DEA /* CaptureView.swift in Sources */,
 				115CBC904FCFE42444AC8580 /* Dashboard.swift in Sources */,
 				6C25AE527E680BDD9C5480B1 /* FocusView.swift in Sources */,
+				21B8284C4DD50BC83B2127B0 /* SchoolSettings.swift in Sources */,
 				C802C02D8437EA0305A6C8DC /* StudyDockApp.swift in Sources */,
 				32FE1D9C68C536C7B90644F3 /* StudyStore.swift in Sources */,
 				256B3248FA0EEF0DBF89A619 /* TaskDetail.swift in Sources */,
 				3D419876B9B234A07DA8B867 /* Theme.swift in Sources */,
+				C6A738708C338C47BF98DC91 /* VoiceAI.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

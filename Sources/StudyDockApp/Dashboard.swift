@@ -2,7 +2,7 @@ import SwiftUI
 import StudyDockCore
 
 enum LibraryFilter: String, CaseIterable, Identifiable {
-    case dashboard = "My desk", upcoming = "Coming up", all = "All schoolwork", completed = "Completed", settings = "Settings"
+    case dashboard = "My desk", upcoming = "Coming up", all = "All schoolwork", completed = "Completed", settings = "Settings", help = "How to use"
     var id: String { rawValue }
     var symbol: String {
         switch self {
@@ -11,6 +11,7 @@ enum LibraryFilter: String, CaseIterable, Identifiable {
         case .all: return "tray.full"
         case .completed: return "checkmark.circle"
         case .settings: return "slider.horizontal.3"
+        case .help: return "questionmark.circle"
         }
     }
 }
@@ -70,7 +71,8 @@ struct Dashboard: View {
         } detail: {
             NavigationStack {
                 Group {
-                    if filter == .settings { SettingsView() }
+                    if filter == .help { HelpView() }
+                    else if filter == .settings { SettingsView() }
                     else { desk }
                 }
                 .background(DockStyle.paper)
