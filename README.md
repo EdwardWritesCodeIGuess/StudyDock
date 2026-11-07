@@ -83,3 +83,7 @@ Layout:
 Use `open build/StudyDock.app --args --demo` for a nonpersistent sample workspace. Demo mode never writes to Calendar or Reminders.
 
 Apple references: [EventKit access](https://developer.apple.com/documentation/eventkit/accessing-the-event-store), [creating events and reminders](https://developer.apple.com/documentation/eventkit/creating-events-and-reminders), [PDFKit](https://developer.apple.com/documentation/pdfkit), [Vision text recognition](https://developer.apple.com/documentation/vision/recognizing-text-in-images).
+
+## Installation repair and Apple verification
+
+For a local source install, use `bash Scripts/install-local.sh`. For the Developer ID signing and notarization process, see [DISTRIBUTION.md](DISTRIBUTION.md). Current preview downloads remain unnotarized until that process is completed.
