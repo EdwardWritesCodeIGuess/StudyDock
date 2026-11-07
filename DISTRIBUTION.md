@@ -12,7 +12,7 @@ This puts a fresh local build in `/Applications/StudyDock.app` and opens it. The
 
 ## Make the public download pass Apple's verification
 
-The current GitHub release is a developer preview without Apple notarization. Repacking it as a DMG or ZIP cannot make it Apple-verified.
+The 1.1.2 release contains source for local installation. Add a downloadable app only after Apple accepts the notarization and Gatekeeper verifies the packaged app. Older preview downloads were ad hoc signed.
 
 Requirements:
 

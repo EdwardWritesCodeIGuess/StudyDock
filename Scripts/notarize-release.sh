@@ -3,8 +3,12 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 : "${CODE_SIGN_IDENTITY:?Set CODE_SIGN_IDENTITY to your Developer ID Application certificate name.}"
 : "${NOTARY_PROFILE:?Set NOTARY_PROFILE to a notarytool keychain profile.}"
-if [ "$CODE_SIGN_IDENTITY" = "-" ]; then
-    echo "Public notarization requires a Developer ID Application certificate, not ad-hoc signing." >&2
+if [[ "$CODE_SIGN_IDENTITY" != "Developer ID Application: "* ]]; then
+    echo "Set CODE_SIGN_IDENTITY to the full Developer ID Application certificate name." >&2
+    exit 1
+fi
+if ! security find-identity -v -p codesigning | grep -F -- "\"$CODE_SIGN_IDENTITY\"" >/dev/null; then
+    echo "The Developer ID Application identity and private key must be available in Keychain." >&2
     exit 1
 fi
 xcrun --find notarytool >/dev/null

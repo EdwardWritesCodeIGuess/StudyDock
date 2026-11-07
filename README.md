@@ -2,13 +2,9 @@
 
 A calmer place for schoolwork. Native SwiftUI app for **iPhone, iPad, and Mac**.
 
-## Download
+## Install on Mac
 
-Open [the latest release](https://github.com/EdwardWritesCodeIGuess/StudyDock/releases/latest), expand **Assets**, and download **StudyDock-macOS-AppleSilicon.dmg**. Open the DMG, then drag **StudyDock.app** onto the **Applications** shortcut. Eject the StudyDock disk and open the app from Applications. A ZIP is also available. This build is for Apple silicon Macs (M1 or newer), macOS 14+.
-
-This personal development build is ad hoc signed, not notarized by Apple. If macOS blocks opening the download, try opening it once, then go to **System Settings → Privacy & Security → Open Anyway** and confirm. Only do this for the release from this repository. No terminal command or disabling Gatekeeper is needed.
-
-For your iPhone, use the Xcode steps below. The Mac download cannot install on an iPhone; there is no TestFlight or App Store release yet.
+StudyDock 1.1.2 is available as source from [GitHub Releases](https://github.com/EdwardWritesCodeIGuess/StudyDock/releases/latest). Build and install it on your Mac with the steps below. A verified DMG requires Apple Developer ID signing and notarization. See [DISTRIBUTION.md](DISTRIBUTION.md) for the release process.
 
 - **Homework → Apple Reminders.** Due dates and completion status stay up to date when edited in StudyDock.
 - **Tests, quizzes, and projects → Apple Calendar.** Events include the assignment instructions and alerts one day and one hour beforehand.
@@ -22,16 +18,15 @@ For your iPhone, use the Xcode steps below. The Mac download cannot install on a
 Requires macOS 14 or later and Apple’s Swift command-line tools. No third-party dependencies or API keys.
 
 ```sh
-./Scripts/build-mac.sh
-open build/StudyDock.app
+bash Scripts/install-local.sh
 ```
 
-The script creates an ad hoc signed local app. A Developer ID and notarization are needed for normal distribution to other Macs. With full Xcode, you can instead open `StudyDock.xcodeproj`, choose the **StudyDock** scheme and **My Mac**, and Run.
+The script builds StudyDock locally, installs it in Applications, and opens it. A Developer ID and notarization are needed for normal distribution to other Macs. With full Xcode, you can instead open `StudyDock.xcodeproj`, choose the **StudyDock** scheme and **My Mac**, and Run.
 
 If a beta command-line SDK is missing SwiftUI compiler plugins, choose a compatible installed SDK explicitly:
 
 ```sh
-STUDYDOCK_SDK=/Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk ./Scripts/build-mac.sh
+STUDYDOCK_SDK=/Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk bash Scripts/install-local.sh
 ```
 
 ## Run on iPhone or iPad
