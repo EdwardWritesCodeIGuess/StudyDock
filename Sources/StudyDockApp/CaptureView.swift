@@ -30,7 +30,7 @@ struct CaptureView: View {
                     Text("Homework lands in Reminders. Quizzes, tests, and projects land in Calendar.")
                         .font(.subheadline).foregroundStyle(DockStyle.muted)
                     if !editing {
-                        Picker("Add mode", selection: $mode) { Text("One item").tag(0); Text("Paste a pile").tag(1) }.pickerStyle(.segmented)
+                        Picker("Add mode", selection: $mode) { Text("One item").tag(0); Text("Talk or paste").tag(1) }.pickerStyle(.segmented)
                     }
                     if mode == 0 { singleItem } else { bulkItems }
                     if let localError { Label(localError, systemImage: "exclamationmark.circle").foregroundStyle(.red).font(.caption) }

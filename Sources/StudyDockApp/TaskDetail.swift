@@ -97,7 +97,7 @@ struct SettingsView: View {
                         Text("Briefs are a quick starting point. Open the original material for the full assignment.")
                     }.font(.subheadline).foregroundStyle(DockStyle.muted)
                 }
-                Text("StudyDock 1.0  ·  A calmer place for schoolwork.").font(.caption).foregroundStyle(DockStyle.muted)
+                Text("StudyDock 1.1  ·  A calmer place for schoolwork.").font(.caption).foregroundStyle(DockStyle.muted)
             }.padding(28).frame(maxWidth: 800).frame(maxWidth: .infinity)
         }
     }

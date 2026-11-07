@@ -53,7 +53,7 @@ Select any item → **Start a focus session** to see the bullet brief before sta
 
 ## Privacy and current limits
 
-- All notes, copied attachments, OCR, and summary extraction stay on the device. There is no server, account, analytics, paid AI service, or network request for summaries.
+- By default, notes, copied attachments, OCR, speech recognition, and Apple Intelligence task extraction stay on device. Optional cloud capture sends your transcript and class schedule to your chosen provider; it uses your own key, stored in Keychain.
 - Briefs are **extractive**, not generative AI. They quote short relevant lines from your files and add a clearly labeled study plan. Always check original instructions.
 - PDF text extraction uses up to 50 pages. Scanned PDFs use on-device OCR on up to 12 pages; image OCR is also supported. Extracted text is capped at 100,000 characters per attachment. Files must be 50 MB or smaller. Locked PDFs and unsupported formats remain attached with an explanation.
 - **The StudyDock library is per device.** It does not yet sync tasks or attachments between iPhone and Mac. Calendar and Reminders entries can sync through their configured Apple accounts.
@@ -87,3 +87,13 @@ Apple references: [EventKit access](https://developer.apple.com/documentation/ev
 ## Installation repair and Apple verification
 
 For a local source install, use `bash Scripts/install-local.sh`. For the Developer ID signing and notarization process, see [DISTRIBUTION.md](DISTRIBUTION.md). Current preview downloads remain unnotarized until that process is completed.
+
+## Voice capture and school schedule
+
+Choose **Add schoolwork → Talk or paste → Dictate schoolwork**. Stop recording, then choose **Review these items**. Check and confirm suggested dates before adding. Homework routes to Reminders; quizzes, tests, and projects route to Calendar.
+
+In **Settings → Voice & AI**, choose Apple Intelligence (OS 26+, eligible device, enabled/downloaded model), a local OpenAI-compatible server such as Ollama, NVIDIA/compatible cloud, or the basic parser. Apple/local modes need no paid API subscription. Cloud provider billing and limits are separate. API compatibility means chat-completions compatibility, not every arbitrary API key. No cloud request is made unless you select cloud mode. Dictation requires on-device speech recognition support for your language.
+
+In **Settings → Your school day**, add your classes and A/B start times and select a known A day. Rotation skips weekends; adjust the anchor after holidays. A missing due time can be suggested from the class start on the stated date; you must confirm it. Missing dates are never silently added.
+
+In **Settings → Calendar destination**, load your writable calendars and pick one. New events go there; existing linked events keep their original calendar. **How to use** in the sidebar contains a guided walkthrough.

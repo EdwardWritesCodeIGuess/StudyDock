@@ -16,7 +16,8 @@ enum SchoolSchedule {
     static func day(on date: Date) -> String? {
         let c = Calendar.current
         guard !c.isDateInWeekend(date) else { return nil }
-        let anchor = Date(timeIntervalSince1970: UserDefaults.standard.double(forKey: "aDayAnchor"))
+        let stored = UserDefaults.standard.object(forKey: "aDayAnchor") as? Double
+        let anchor = Date(timeIntervalSince1970: stored ?? Calendar.current.startOfDay(for: Date()).timeIntervalSince1970)
         var cursor = c.startOfDay(for: min(anchor, date)), count = 0
         let end = c.startOfDay(for: max(anchor, date))
         while cursor < end {
@@ -31,7 +32,11 @@ enum SchoolSchedule {
         return Calendar.current.date(bySettingHour: slot.hour, minute: slot.minute, second: 0, of: date)
     }
     static var context: String {
-        "A/B rotation skips weekends, not holidays. Classes: " + slots.map { "\($0.subject), \($0.day) day, \($0.hour):\(String(format: "%02d", $0.minute))" }.joined(separator: "; ")
+        "A/B rotation skips weekends, not holidays. Upcoming rotation: " + (0..<14).compactMap { offset -> String? in
+            guard let date = Calendar.current.date(byAdding: .day, value: offset, to: Date()), let day = day(on: date) else { return nil }
+            let formatter = DateFormatter(); formatter.dateFormat = "yyyy-MM-dd"
+            return "\(formatter.string(from: date)) \(day)"
+        }.joined(separator: "; ") + ". Classes: " + slots.map { "\($0.subject), \($0.day) day, \($0.hour):\(String(format: "%02d", $0.minute))" }.joined(separator: "; ")
     }
 }
 struct SchoolSettings: View {
@@ -74,6 +79,8 @@ struct SchoolSettings: View {
             }
             if let error { Text(error).foregroundStyle(.red).font(.caption) }
             Text("New events use this calendar. Existing events keep their current calendar.").font(.caption)
+        }.onAppear {
+            if EKEventStore.authorizationStatus(for: .event) == .fullAccess { calendars = events.calendars(for: .event).filter(\.allowsContentModifications) }
         }.onChange(of: slots.map { "\($0.id)\($0.subject)\($0.day)\($0.hour)\($0.minute)" }) { _, _ in SchoolSchedule.slots = slots }
     }
 }
