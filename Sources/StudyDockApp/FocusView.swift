@@ -39,7 +39,7 @@ struct BriefView: View {
                                     Text("\(duration)m").font(.subheadline).frame(maxWidth: .infinity).padding(.vertical, 13)
                                         .foregroundStyle(minutes == duration ? .white : DockStyle.ink)
                                         .background(minutes == duration ? DockStyle.green : .white, in: RoundedRectangle(cornerRadius: 12))
-                                }.buttonStyle(.plain)
+                                }.buttonStyle(ResponsiveButtonStyle())
                             }
                         }
                         Stepper("\(minutes) minutes", value: $minutes, in: 5...180, step: 5).font(.subheadline)

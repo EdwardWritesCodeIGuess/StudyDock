@@ -18,6 +18,7 @@ enum LibraryFilter: String, CaseIterable, Identifiable {
 
 struct Dashboard: View {
     @EnvironmentObject private var store: StudyStore
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var filter: LibraryFilter? = .dashboard
     @State private var query = ""
     @State private var adding = false
@@ -58,7 +59,8 @@ struct Dashboard: View {
                             }.font(.system(size: 13, weight: filter == item ? .semibold : .regular))
                                 .padding(12).foregroundStyle(filter == item ? DockStyle.green : DockStyle.muted)
                                 .background(filter == item ? DockStyle.mint.opacity(0.5) : .clear, in: RoundedRectangle(cornerRadius: 11))
-                        }.buttonStyle(.plain)
+                                .animation(reduceMotion ? nil : .easeOut(duration: 0.15), value: filter)
+                        }.buttonStyle(ResponsiveButtonStyle())
                     }
                 }.padding(.horizontal, 12)
                 Spacer()
@@ -126,7 +128,7 @@ struct Dashboard: View {
                                 Image(systemName: "arrow.up.right")
                             }.padding(20).foregroundStyle(DockStyle.ink).background(DockStyle.mint, in: RoundedRectangle(cornerRadius: 16))
                         }
-                    }.buttonStyle(.plain)
+                    }.buttonStyle(ResponsiveButtonStyle())
                 }
                 if filter == .dashboard {
                     HStack(spacing: 12) {
@@ -172,6 +174,8 @@ struct Dashboard: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack { Image(systemName: symbol); Spacer(minLength: 0) }.foregroundStyle(DockStyle.green)
             Text(value).font(.system(size: 28, weight: .medium, design: .rounded))
+                .contentTransition(.numericText())
+                .animation(reduceMotion ? nil : .easeOut(duration: 0.20), value: value)
             Text(label).font(.system(size: 9, weight: .semibold)).tracking(1).foregroundStyle(DockStyle.muted)
         }.padding(16).frame(maxWidth: .infinity, alignment: .leading).background(.white, in: RoundedRectangle(cornerRadius: 16))
     }
@@ -199,12 +203,57 @@ struct WorkRow: View {
     var busy: Bool
     var open: () -> Void
     var complete: () -> Void
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    #if os(iOS)
+    @GestureState private var swipeDistance: CGFloat = 0
+    #endif
+
     var body: some View {
+        #if os(iOS)
+        content
+            .offset(x: reduceMotion ? 0 : -min(swipeDistance, 115))
+            .background(alignment: .trailing) {
+                if swipeDistance > 0 {
+                    Label(task.completed ? "Reopen" : "Complete",
+                          systemImage: task.completed ? "arrow.uturn.backward" : "checkmark")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(DockStyle.green)
+                        .padding(.trailing, 14)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
+                        .background(DockStyle.mint.opacity(swipeDistance >= 100 ? 1 : 0.55),
+                                    in: RoundedRectangle(cornerRadius: 16))
+                        .accessibilityHidden(true)
+                }
+            }
+            .clipped()
+            .animation(reduceMotion || swipeDistance > 0 ? nil : .easeOut(duration: 0.16), value: swipeDistance)
+            .simultaneousGesture(
+                DragGesture(minimumDistance: 18)
+                    .updating($swipeDistance) { value, distance, _ in
+                        if !busy && value.translation.width < 0
+                            && -value.translation.width > 1.5 * abs(value.translation.height) {
+                            distance = -value.translation.width
+                        }
+                    }
+                    .onEnded { value in
+                        if !busy && value.translation.width < -100
+                            && -value.translation.width > 1.5 * abs(value.translation.height) {
+                            complete()
+                        }
+                    }
+            )
+            .sensoryFeedback(.selection, trigger: task.completed)
+        #else
+        content
+        #endif
+    }
+
+    private var content: some View {
         HStack(spacing: 14) {
             Button(action: complete) {
                 Image(systemName: task.completed ? "checkmark.circle.fill" : "circle").font(.system(size: 23, weight: .light))
                     .foregroundStyle(task.completed ? DockStyle.green : DockStyle.line)
-            }.buttonStyle(.plain).disabled(busy).accessibilityLabel(task.completed ? "Mark incomplete" : "Mark complete")
+            }.buttonStyle(ResponsiveButtonStyle()).disabled(busy).accessibilityLabel(task.completed ? "Mark incomplete" : "Mark complete")
             Button(action: open) {
                 VStack(alignment: .leading, spacing: 8) {
                     HStack(spacing: 8) {
@@ -220,7 +269,7 @@ struct WorkRow: View {
                         if busy { ProgressView().controlSize(.mini) }
                     }.font(.system(size: 11)).foregroundStyle(DockStyle.muted)
                 }.frame(maxWidth: .infinity, alignment: .leading).contentShape(Rectangle())
-            }.buttonStyle(.plain)
+            }.buttonStyle(ResponsiveButtonStyle())
             Image(systemName: "chevron.right").font(.caption).foregroundStyle(DockStyle.muted).accessibilityHidden(true)
         }.padding(18).background(.white, in: RoundedRectangle(cornerRadius: 16))
             .overlay(RoundedRectangle(cornerRadius: 16).stroke(DockStyle.line, lineWidth: 0.6))

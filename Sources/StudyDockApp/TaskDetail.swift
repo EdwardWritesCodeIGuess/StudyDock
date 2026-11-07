@@ -51,7 +51,7 @@ struct TaskDetail: View {
                                             Spacer(); Image(systemName: "arrow.up.right")
                                         }
                                     }
-                                }.buttonStyle(.plain)
+                                }.buttonStyle(ResponsiveButtonStyle())
                             }
                         }
                         Button("Delete schoolwork", role: .destructive) { deleting = true }.disabled(store.busy.contains(task.id)).padding(.top, 12)

@@ -25,7 +25,38 @@ struct PrimaryButtonStyle: ButtonStyle {
             .padding(.horizontal, 20).padding(.vertical, 13)
             .background(light ? DockStyle.mint : DockStyle.ink, in: RoundedRectangle(cornerRadius: 13))
             .foregroundStyle(light ? DockStyle.ink : .white)
-            .opacity(configuration.isPressed ? 0.7 : 1)
+            .modifier(ButtonResponse(pressed: configuration.isPressed, radius: 13))
+    }
+}
+
+struct ResponsiveButtonStyle: ButtonStyle {
+    var radius: CGFloat = 10
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .modifier(ButtonResponse(pressed: configuration.isPressed, radius: radius))
+    }
+}
+
+private struct ButtonResponse: ViewModifier {
+    var pressed: Bool
+    var radius: CGFloat
+    @Environment(\.isEnabled) private var enabled
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var hovered = false
+
+    func body(content: Content) -> some View {
+        content
+            .overlay {
+                RoundedRectangle(cornerRadius: radius)
+                    .fill(.primary.opacity(enabled ? (pressed ? 0.10 : hovered ? 0.045 : 0) : 0))
+                    .allowsHitTesting(false)
+            }
+            .opacity(enabled ? 1 : 0.55)
+            .scaleEffect(pressed && enabled && !reduceMotion ? 0.98 : 1)
+            .onHover { hovered = $0 }
+            .animation(reduceMotion ? nil : .easeOut(duration: 0.14), value: hovered)
+            .animation(reduceMotion ? nil : .easeOut(duration: 0.12), value: pressed)
     }
 }
 

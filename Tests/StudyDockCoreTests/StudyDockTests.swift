@@ -93,3 +93,22 @@ final class StudyDockTests: XCTestCase {
         XCTAssertThrowsError(try LibraryFile.read(from: file))
     }
 }
+
+final class DictationTranscriptTests: XCTestCase {
+    func testLaterPhraseKeepsEarlierSentencesAndReplacesItsOwnRevision() {
+        var transcript = DictationTranscript()
+        transcript.update([.init(start: 0, text: "Math"), .init(start: 0.3, text: "is due Friday.")],
+                          formattedText: "Math is due Friday.")
+        transcript.update([.init(start: 3, text: "History"), .init(start: 3.2, text: "test"), .init(start: 3.5, text: "Tuesday.")],
+                          formattedText: "History test Tuesday.")
+        transcript.update([.init(start: 3.01, text: "History"), .init(start: 3.22, text: "test Thursday.")],
+                          formattedText: "History test Thursday.")
+        XCTAssertEqual(transcript.text, "Math is due Friday. History test Thursday.")
+    }
+
+    func testRecordingAppendsToTypedAndPreviouslyDictatedText() {
+        let first = DictationTranscript.appending("Math due Friday.", to: "Existing notes")
+        XCTAssertEqual(DictationTranscript.appending("History test Thursday.", to: first),
+                       "Existing notes\nMath due Friday.\nHistory test Thursday.")
+    }
+}

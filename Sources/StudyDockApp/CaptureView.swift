@@ -30,7 +30,7 @@ struct CaptureView: View {
                     Text("Homework lands in Reminders. Quizzes, tests, and projects land in Calendar.")
                         .font(.subheadline).foregroundStyle(DockStyle.muted)
                     if !editing {
-                        Picker("Add mode", selection: $mode) { Text("One item").tag(0); Text("Talk or paste").tag(1) }.pickerStyle(.segmented)
+                        Picker("Add mode", selection: $mode) { Text("One item").tag(0); Text("Talk or paste").tag(1) }.pickerStyle(.segmented).disabled(recorder.phase != .idle || recorder.hasPendingRecording)
                     }
                     if mode == 0 { singleItem } else { bulkItems }
                     if let localError { Label(localError, systemImage: "exclamationmark.circle").foregroundStyle(.red).font(.caption) }
@@ -44,17 +44,23 @@ struct CaptureView: View {
                 }
             }
         }.dockSheet()
+        .interactiveDismissDisabled(recorder.phase != .idle || recorder.hasPendingRecording)
         .fileImporter(isPresented: $importing, allowedContentTypes: [.item], allowsMultipleSelection: true) { result in
             switch result {
             case .success(let urls): importFiles(urls)
             case .failure(let error): localError = error.localizedDescription
             }
         }
-        .onDisappear { recorder.stop(); store.cleanUp(imported) }
+        .onDisappear { recorder.cancel(); store.cleanUp(imported) }
+        .onChange(of: mode) { _, _ in recorder.cancel() }
+        .onChange(of: recorder.transcript) { _, transcript in
+            guard let transcript else { return }
+            dump = DictationTranscript.appending(transcript, to: dump)
+        }
     }
     private var canSave: Bool {
         if mode == 0 { return !draft.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && !store.busy.contains(draft.id) }
-        return !candidates.isEmpty && candidates.allSatisfy { !$0.needsDate && !$0.task.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+        return recorder.phase == .idle && !recorder.hasPendingRecording && !understanding && !candidates.isEmpty && candidates.allSatisfy { !$0.needsDate && !$0.task.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
     }
     private var singleItem: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -87,7 +93,7 @@ struct CaptureView: View {
                     }.padding(24).frame(maxWidth: .infinity)
                         .background(dropTargeted ? DockStyle.mint : DockStyle.mint.opacity(0.20), in: RoundedRectangle(cornerRadius: 15))
                         .overlay(RoundedRectangle(cornerRadius: 15).strokeBorder(DockStyle.green.opacity(0.4), style: StrokeStyle(lineWidth: 1, dash: [5])))
-                }.buttonStyle(.plain).disabled(processingFiles)
+                }.buttonStyle(ResponsiveButtonStyle()).disabled(processingFiles)
                     .dropDestination(for: URL.self) { urls, _ in guard !processingFiles else { return false }; importFiles(urls); return true } isTargeted: { dropTargeted = $0 }
                 ForEach(draft.attachments) { file in
                     HStack {
@@ -97,7 +103,7 @@ struct CaptureView: View {
                             if let note = file.note { Text(note).font(.caption).foregroundStyle(DockStyle.muted) }
                         }
                         Spacer()
-                        Button { draft.attachments.removeAll { $0.id == file.id } } label: { Image(systemName: "xmark.circle") }.buttonStyle(.plain).accessibilityLabel("Remove \(file.name)")
+                        Button { draft.attachments.removeAll { $0.id == file.id } } label: { Image(systemName: "xmark.circle") }.buttonStyle(ResponsiveButtonStyle()).accessibilityLabel("Remove \(file.name)")
                     }.padding(10).background(.white, in: RoundedRectangle(cornerRadius: 10))
                 }
             }
@@ -106,22 +112,19 @@ struct CaptureView: View {
     private var bulkItems: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Talk it through, paste a list, or type naturally. Review the suggested tasks before adding.").font(.subheadline)
-            Button(recorder.recording ? "Stop dictation" : "Dictate schoolwork", systemImage: recorder.recording ? "stop.circle" : "mic") {
-                if recorder.recording { recorder.stop() } else { Task { await recorder.start() } }
-            }
-            .onChange(of: recorder.text) { _, value in dump = value }
-            if let error = recorder.error { Text(error).font(.caption).foregroundStyle(.orange) }
+            DictationControl(recorder: recorder).disabled(understanding)
             Text("[Math] Practice set due tomorrow at 5pm\n[Biology] Quiz on November 12 at 9am\n[History] Project due November 20 at 3pm")
                 .font(.caption).foregroundStyle(DockStyle.muted).textSelection(.enabled)
             TextEditor(text: $dump).frame(minHeight: 160).padding(8).scrollContentBackground(.hidden).background(.white, in: RoundedRectangle(cornerRadius: 12))
                 .onChange(of: dump) { _, _ in candidates = [] }
+                .disabled(recorder.phase != .idle || understanding)
             Button(understanding ? "Understanding…" : "Review these items", systemImage: "text.badge.checkmark") {
-                recorder.stop(); understanding = true
+                understanding = true
                 Task {
                     defer { understanding = false }
                     do { candidates = try await VoiceTaskAI.extract(dump) } catch { localError = error.localizedDescription }
                 }
-            }.buttonStyle(PrimaryButtonStyle()).disabled(understanding || recorder.recording || dump.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+            }.buttonStyle(PrimaryButtonStyle()).disabled(understanding || recorder.phase != .idle || recorder.hasPendingRecording || dump.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             if !candidates.isEmpty {
                 Text("Check every date and type before adding. You can attach files to each item afterward.").font(.caption).foregroundStyle(DockStyle.muted)
             }
@@ -180,5 +183,67 @@ struct CaptureView: View {
             if candidates.isEmpty { dismiss() }
             else { localError = "Some items could not be saved. Your remaining items are still here." }
         }
+    }
+}
+
+private struct DictationControl: View {
+    @ObservedObject var recorder: DictationRecorder
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            switch recorder.phase {
+            case .idle:
+                if recorder.hasPendingRecording {
+                    HStack {
+                        Button("Retry transcription") { recorder.retry() }
+                            .buttonStyle(.bordered)
+                        Button("Discard recording", role: .destructive) { recorder.cancel() }
+                    }
+                } else {
+                    Button("Dictate schoolwork", systemImage: "mic") {
+                        Task { await recorder.start() }
+                    }
+                    .buttonStyle(.bordered)
+                }
+            case .preparing:
+                ProgressView("Getting the microphone ready…")
+            case .recording:
+                HStack(spacing: 14) {
+                    Button("Finish recording", systemImage: "stop.fill") { recorder.finish() }
+                        .buttonStyle(PrimaryButtonStyle())
+                    Spacer(minLength: 0)
+                    TimelineView(.periodic(from: .now, by: reduceMotion ? 1 : 0.08)) { _ in
+                        let level = recorder.level()
+                        HStack(spacing: 3) {
+                            ForEach(0..<7) { index in
+                                Capsule()
+                                    .fill(DockStyle.green)
+                                    .frame(width: 3, height: 4 + 16 * level * (1 - Double(abs(index - 3)) / 5))
+                            }
+                        }
+                        .frame(height: 22)
+                        .animation(reduceMotion ? nil : .easeOut(duration: 0.09), value: level)
+                        .accessibilityHidden(true)
+                        Text(FocusView.clock(recorder.elapsed))
+                            .monospacedDigit()
+                            .foregroundStyle(DockStyle.muted)
+                    }
+                }
+                Text(recorder.usesModernSpeech
+                     ? "Recording. Finish to add the transcript to your draft."
+                     : "Recording up to 55 seconds. You can add another recording afterward.")
+                    .font(.caption)
+                    .foregroundStyle(DockStyle.muted)
+            case .transcribing:
+                ProgressView("Transcribing your recording…")
+            }
+            if let error = recorder.error {
+                Label(error, systemImage: "exclamationmark.circle")
+                    .font(.caption)
+                    .foregroundStyle(.orange)
+            }
+        }
+        .accessibilityElement(children: .contain)
     }
 }
